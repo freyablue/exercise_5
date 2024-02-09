@@ -175,12 +175,73 @@ def room(room_id):
 # POST to change the user's name
 @app.route('/api/user/name')
 def update_username():
-    return {}, 403
+    #return {}, 403
+    user = get_user_from_cookie(request)
+    if user is None:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    # TODO: Implement username update logic here
+    # Example: Update the user's name in the database
+    new_name = request.json.get('name')
+    query_db('UPDATE users SET name = ? WHERE id = ?', [new_name, user['id']])
+    
+    return jsonify({'success': True})
+
 
 # POST to change the user's password
+@app.route('/api/user/password', methods=['POST'])
+def update_password():
+    user = get_user_from_cookie(request)
+    if user is None:
+        return jsonify({'error': 'Unauthorized'}), 401
 
+    # TODO: Implement password update logic here
+    # Example: Update the user's password in the database
+    new_password = request.json.get('password')
+    query_db('UPDATE users SET password = ? WHERE id = ?', [new_password, user['id']])
+    
+    return jsonify({'success': True})
 # POST to change the name of a room
+@app.route('/api/room/name', methods=['POST'])
+def update_room_name():
+    user = get_user_from_cookie(request)
+    if user is None:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    # TODO: Implement room name update logic here
+    # Example: Update the room's name in the database
+    room_id = user['current_room_id']
+    new_name = request.json.get('name')
+    query_db('UPDATE rooms SET name = ? WHERE id = ?', [new_name, room_id])
+    
+    return jsonify({'success': True})
 
 # GET to get all the messages in a room
+@app.route('/api/messages', methods=['GET'])
+def get_all_messages():
+    user = get_user_from_cookie(request)
+    if user is None:
+        return jsonify({'error': 'Unauthorized'}), 401
 
+    # TODO: Implement logic to fetch all messages in the current room
+    # Example: Fetch messages from the database
+    room_id = user['current_room_id']
+    messages = query_db('SELECT * FROM messages WHERE room_id = ?', [room_id])
+    
+    return jsonify(messages)
 # POST to post a new message to a room
+@app.route('/api/messages', methods=['POST'])
+def post_message():
+    user = get_user_from_cookie(request)
+    if user is None:
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    # TODO: Implement logic to post a new message to the current room
+    # Example: Insert a new message into the database
+    room_id = user['current_room_id']
+    content = request.json.get('content')
+    timestamp = datetime.utcnow().isoformat()
+    query_db('INSERT INTO messages (user_id, room_id, body, timestamp) VALUES (?, ?, ?, ?)',
+             [user['id'], room_id, content, timestamp])
+    
+    return jsonify({'success': True})
