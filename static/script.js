@@ -43,10 +43,55 @@ function startMessagePolling() {
 
 function updateRoomName(newName) {
   fetch('/api/room/update-name', {
-    
+    method: 'PUT',
+    headers: {
+        'Content-Type': 'application/json',
+        'API-Key': 'your_api_key',
+    },
+    body: JSON.stringify({ new_room_name: newRoomName }),
   })
+  .then(response => response.json())
+  .then(result => {
+    // Handle success
+    console.log('Success:', result);
+  })
+  .catch(error => console.error('Error Updating Name:', error));
 }
 
 /* For profile.html */
 
 // TODO: Allow updating the username and password
+
+function updateUsername(newUsername) {
+  fetch('/api/user/username', {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+          'API-Key': 'your_api_key',
+      },
+      body: JSON.stringify({ new_username: newUsername }),
+  })
+  .then(response => response.json())
+  .then(result => {
+      // Handle success
+      console.log('Username updated successfully:', result);
+  })
+  .catch(error => console.error('Error updating username:', error));
+}
+
+function updatePassword(newPassword) {
+  fetch('/api/user/password', {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+          'API-Key': 'your_api_key',
+      },
+      body: JSON.stringify({ new_password: newPassword }),
+  })
+  .then(response => response.json())
+  .then(result => {
+      // Handle success
+      console.log('Password updated successfully:', result);
+  })
+  .catch(error => console.error('Error updating password:', error));
+}
