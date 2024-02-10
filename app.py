@@ -214,7 +214,7 @@ def room(room_id):
 #     user = query_db('SELECT id FROM users WHERE api_key = ?', [api_key], one=True)
 #     return user['id'] if user else None
 # POST to change the user's name
-@app.route('/api/user/name')
+@app.route('/api/user/username', methods=['PUT'])
 def update_username():
     #return {}, 403
     user = get_user_from_cookie(request)
@@ -271,15 +271,16 @@ def get_all_messages(room_id):
     
     return jsonify(messages)
 # POST to post a new message to a room
-@app.route('/api/messages', methods=['POST'])
-def post_message():
+# @app.route('/api/messages', methods=['POST'])
+@app.route('/api/room/<int:room_id>/messages', methods=['POST'])
+def post_message(room_id):
     user = get_user_from_cookie(request)
     if user is None:
         return jsonify({'error': 'Unauthorized'}), 401
 
     # TODO: Implement logic to post a new message to the current room
     # Example: Insert a new message into the database
-    room_id = user['current_room_id']
+    #room_id = user['current_room_id']
     content = request.json.get('content')
     timestamp = datetime.utcnow().isoformat()
     query_db('INSERT INTO messages (user_id, room_id, body, timestamp) VALUES (?, ?, ?, ?)',
