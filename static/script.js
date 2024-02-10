@@ -41,7 +41,7 @@ function startMessagePolling() {
   }, 100);  // the interval
 }
 
-function updateRoomName(newName) {
+function updateRoomName(newRoomName) {
   fetch('/api/room/update-name', {
     method: 'PUT',
     headers: {
