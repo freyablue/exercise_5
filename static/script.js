@@ -4,12 +4,20 @@
 // POST to the API when the user posts a new message.
 // Automatically poll for new messages on a regular interval.
 // Allow changing the name of a room
-function postMessage() {
-  fetch('/api/room/<room_id>/messages', {
+
+// Function to clear existing messages
+function clearMessages() {
+  var messagesContainer = document.querySelector('.messages');
+  messagesContainer.innerHTML = ''; 
+}
+
+function postMessage(room_id, content) {
+  //fetch('/api/room/<room_id>/messages', {
+  fetch(`/api/room/${room_id}/messages`, {
     method: 'POST',
     header: {
       'Content-Type': 'application/json',
-      'API-Key':'your_api_key',
+      'API-Key':WATCH_PARTY_API_KEY,
     },
     body: JSON.stringify({content: content}),
   })
@@ -20,17 +28,22 @@ function postMessage() {
   .catch(error=> console.error('Error Posting Message ', error));
 }
 
-function getMessages() {
-  fetch('/api/room/<room_id>/messages', {
+function getMessages(room_id) {
+  //fetch('/api/room/<room_id>/messages', {
+  fetch(`/api/room/${room_id}/messages`, {
     method: 'GET',
     headers: {
-        'API-Key': 'your_api_key',
+        'API-Key': WATCH_PARTY_API_KEY,
     },
   })
   .then(response => response.json())
   .then(messages => {
     // Process and display messages
+    clearMessages();
     console.log('Fetched Messages:', messages);
+    // messages.forEach(message => {
+    //   createMessageElement(message.author, message.content);
+    // });
   })
   .catch(error => console.error('Error Fetching Messages:', error));
 }
@@ -42,11 +55,11 @@ function startMessagePolling() {
 }
 
 function updateRoomName(newRoomName) {
-  fetch('/api/room/update-name', {
+  fetch('/api/room/name', {
     method: 'PUT',
     headers: {
         'Content-Type': 'application/json',
-        'API-Key': 'your_api_key',
+        'API-Key': WATCH_PARTY_API_KEY,
     },
     body: JSON.stringify({ new_room_name: newRoomName }),
   })
@@ -57,6 +70,9 @@ function updateRoomName(newRoomName) {
   })
   .catch(error => console.error('Error Updating Name:', error));
 }
+
+
+
 
 /* For profile.html */
 
@@ -95,3 +111,22 @@ function updatePassword(newPassword) {
   })
   .catch(error => console.error('Error updating password:', error));
 }
+
+function createMessageElement(author, content) {
+  const messageElement = document.createElement('div');
+  messageElement.classList.add('message');
+
+  const authorElement = document.createElement('div');
+  authorElement.classList.add('author');
+  authorElement.textContent = author;
+
+  const contentElement = document.createElement('div');
+  contentElement.classList.add('content');
+  contentElement.textContent = content;
+
+  messageElement.appendChild(authorElement);
+  messageElement.appendChild(contentElement);
+
+  document.querySelector('.messages').appendChild(messageElement);
+}
+
