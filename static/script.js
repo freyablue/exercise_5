@@ -1,9 +1,9 @@
-/* For room.html */
+// /* For room.html */
 
-// TODO: Fetch the list of existing chat messages.
-// POST to the API when the user posts a new message.
-// Automatically poll for new messages on a regular interval.
-// Allow changing the name of a room
+// // TODO: Fetch the list of existing chat messages.
+// // POST to the API when the user posts a new message.
+// // Automatically poll for new messages on a regular interval.
+// // Allow changing the name of a room
 
 // Function to clear existing messages
 function clearMessages() {
@@ -11,7 +11,7 @@ function clearMessages() {
   messagesContainer.innerHTML = ''; 
 }
 
-function postMessage(room_id, content) {
+function postMessage() {
   //fetch('/api/room/<room_id>/messages', {
   fetch(`/api/room/${room_id}/messages`, {
     method: 'POST',
@@ -28,7 +28,7 @@ function postMessage(room_id, content) {
   .catch(error=> console.error('Error Posting Message ', error));
 }
 
-function getMessages(room_id) {
+function getMessages() {
   //fetch('/api/room/<room_id>/messages', {
   fetch(`/api/room/${room_id}/messages`, {
     method: 'GET',
@@ -40,10 +40,10 @@ function getMessages(room_id) {
   .then(messages => {
     // Process and display messages
     clearMessages();
-    console.log('Fetched Messages:', messages);
-    // messages.forEach(message => {
-    //   createMessageElement(message.author, message.content);
-    // });
+    //console.log('Fetched Messages:', messages);
+    messages.forEach(message => {
+      createMessageElement(message.author, message.content);
+    });
   })
   .catch(error => console.error('Error Fetching Messages:', error));
 }
@@ -54,7 +54,7 @@ function startMessagePolling() {
   }, 100);  // the interval
 }
 
-function updateRoomName(newRoomName) {
+function updateRoomName() {
   fetch('/api/room/name', {
     method: 'PUT',
     headers: {
@@ -74,12 +74,12 @@ function updateRoomName(newRoomName) {
 
 
 
-/* For profile.html */
+// /* For profile.html */
 
-// TODO: Allow updating the username and password
+// // TODO: Allow updating the username and password
 
 function updateUsername(newUsername) {
-  fetch('/api/user/username', {
+  fetch('/api/user/name', {
       method: 'PUT',
       headers: {
           'Content-Type': 'application/json',
@@ -129,4 +129,5 @@ function createMessageElement(author, content) {
 
   document.querySelector('.messages').appendChild(messageElement);
 }
+
 

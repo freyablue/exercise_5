@@ -214,7 +214,7 @@ def room(room_id):
 #     user = query_db('SELECT id FROM users WHERE api_key = ?', [api_key], one=True)
 #     return user['id'] if user else None
 # POST to change the user's name
-@app.route('/api/user/username', methods=['PUT'])
+@app.route('/api/user/name', methods=['POST'])
 def update_username():
     #return {}, 403
     user = get_user_from_cookie(request)
@@ -267,9 +267,12 @@ def get_all_messages(room_id):
     # TODO: Implement logic to fetch all messages in the current room
     # Example: Fetch messages from the database
     # room_id = user['current_room_id']
-    messages = query_db('SELECT * FROM messages WHERE room_id = ?', [room_id])
     
-    return jsonify(messages)
+
+    messages = query_db('SELECT * FROM messages WHERE room_id = ?', [room_id])
+    messages_dict = [dict(row) for row in messages]
+    
+    return jsonify(messages_dict)
 # POST to post a new message to a room
 # @app.route('/api/messages', methods=['POST'])
 @app.route('/api/room/<int:room_id>/messages', methods=['POST'])
